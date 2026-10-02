@@ -1,34 +1,26 @@
-// js/donut.js
+// donut.js  (uses your real tvBrandCount.csv)
 const createDonut = (data, selector) => {
-  const size = 360;
-  const svg = d3.select(selector)
-    .append("svg")
-    .attr("viewBox", `0 0 ${size} ${size}`);
-  const g = svg.append("g").attr("transform", `translate(${size / 2},${size / 2})`);
+  const W = 600, H = 360, radius = 160;
+  const svg = d3.select(selector).append("svg").attr("viewBox", `0 0 ${W} ${H}`);
+  const g = svg.append("g").attr("transform", `translate(${radius + 20},${H / 2})`);
 
-  // Count of models per screen technology
-  const counts = Array.from(
-    d3.rollup(data, v => v.length, d => d.tech),
-    ([tech, count]) => ({ tech, count })
-  );
-
-  const radius = size / 2 - 10;
   const pie = d3.pie().value(d => d.count).sort(null);
   const arc = d3.arc().innerRadius(radius * 0.55).outerRadius(radius);
-  const color = d3.scaleOrdinal().domain(counts.map(d => d.tech)).range(COLORS);
-  const total = d3.sum(counts, d => d.count);
+  const color = d3.scaleOrdinal().domain(data.map(d => d.brand)).range(d3.schemeTableau10);
+  const total = d3.sum(data, d => d.count);
 
-  const slices = g.selectAll("g.slice")
-    .data(pie(counts))
-    .join("g")
-    .attr("class", "slice");
-
-  slices.append("path")
-    .attr("d", arc)
-    .attr("fill", d => color(d.data.tech));
-
-  slices.append("text")
+  const slices = g.selectAll("g").data(pie(data)).join("g");
+  slices.append("path").attr("d", arc).attr("fill", d => color(d.data.brand));
+  slices.filter(d => d.data.count / total >= 0.06).append("text")
     .attr("class", "slice-label")
     .attr("transform", d => `translate(${arc.centroid(d)})`)
-    .text(d => `${d.data.tech} ${Math.round(d.data.count / total * 100)}%`);
+    .text(d => `${Math.round(d.data.count / total * 100)}%`);
+
+  // Legend
+  const legend = svg.append("g").attr("class", "legend").attr("transform", `translate(${radius * 2 + 50},40)`);
+  data.forEach((d, i) => {
+    const row = legend.append("g").attr("transform", `translate(0,${i * 26})`);
+    row.append("rect").attr("width", 14).attr("height", 14).attr("fill", color(d.brand));
+    row.append("text").attr("x", 22).attr("y", 12).text(`${d.brand} (${d.count})`);
+  });
 };
