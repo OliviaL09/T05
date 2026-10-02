@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Watt Watch | TV power consumption</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="banner">
+    <h1>TV power consumption</h1>
+  </header>
+
+  <main class="dashboard">
+    <section class="card">
+      <h2>Screen size and power use</h2>
+      <div id="chart-scatter" class="responsive-svg-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Electricity price over time</h2>
+      <div id="chart-line" class="responsive-svg-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Mean energy use by screen technology</h2>
+      <div id="chart-bar" class="responsive-svg-container"></div>
+    </section>
+
+    <section class="card">
+      <h2>Share of models by screen technology</h2>
+      <div id="chart-donut" class="responsive-svg-container"></div>
+    </section>
+  </main>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/scatter.js"></script>
+  <script src="js/line.js"></script>
+  <script src="js/bar.js"></script>
+  <script src="js/donut.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
